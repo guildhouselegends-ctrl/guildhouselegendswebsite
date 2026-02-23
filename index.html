@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guildhouse Legends — One-Shot D&D Adventures</title>
+
+  <!-- Google Fonts: Cinzel Decorative (fantasy display) + Cormorant Garamond (literary) + Nunito (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* =========================================================
+       CSS VARIABLES — BRAND SYSTEM
+    ========================================================= */
+    :root {
+      --pink:        #E91E8C;
+      --orange:      #FF6B2B;
+      --gold:        #FFD000;
+      --midnight:    #090714;
+      --deep-purple: #120B25;
+      --card-bg:     #17102E;
+      --card-border: rgba(255,255,255,0.06);
+      --text-light:  #F5EDD6;
+      --text-muted:  #9B8DBF;
+      --text-dark:   #0D0B1A;
+
+      --grad-hero: linear-gradient(140deg, #E91E8C 0%, #FF6B2B 52%, #FFD000 100%);
+      --grad-radial-pink: radial-gradient(ellipse 60% 80% at 15% 60%, rgba(233,30,140,0.35) 0%, transparent 70%);
+      --grad-radial-gold: radial-gradient(ellipse 50% 70% at 85% 20%, rgba(255,208,0,0.25) 0%, transparent 65%);
+
+      --shadow-pink-glow: 0 8px 40px -8px rgba(233,30,140,0.45), 0 2px 8px rgba(0,0,0,0.5);
+      --shadow-card: 0 2px 4px rgba(0,0,0,0.4), 0 16px 48px -8px rgba(13,11,26,0.6), 0 0 0 1px var(--card-border);
+      --shadow-card-hover: 0 2px 4px rgba(0,0,0,0.4), 0 24px 64px -8px rgba(233,30,140,0.25), 0 0 0 1px rgba(233,30,140,0.2);
+    }
+
+    /* =========================================================
+       RESET & BASE
+    ========================================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--midnight);
+      color: var(--text-light);
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+
+    /* =========================================================
+       NOISE TEXTURE OVERLAY
+    ========================================================= */
+    .noise {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      opacity: 0.055;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 220px 220px;
+    }
+
+    /* =========================================================
+       NAVIGATION
+    ========================================================= */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2.5rem;
+      background: var(--grad-hero);
+      box-shadow: 0 2px 0 rgba(0,0,0,0.2), 0 4px 24px rgba(233,30,140,0.25);
+      overflow: hidden;
+    }
+
+    nav::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--grad-radial-pink), var(--grad-radial-gold);
+      pointer-events: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-link {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-dark);
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 3px;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 2px;
+      background: var(--text-dark);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .nav-link:hover::after { transform: scaleX(1); }
+    .nav-link:hover { opacity: 0.7; }
+
+    .nav-logo {
+      height: 52px;
+      width: 52px;
+      border-radius: 10px;
+      object-fit: cover;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.45), 0 0 0 2px rgba(255,255,255,0.15);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    }
+    .nav-logo:hover {
+      transform: scale(1.1) rotate(-3deg);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 0 2px rgba(255,255,255,0.25);
+    }
+
+    /* =========================================================
+       HERO / HOME SECTION
+    ========================================================= */
+    #home {
+      position: relative;
+      background: var(--grad-hero);
+      overflow: hidden;
+    }
+
+    #home::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--grad-radial-pink), var(--grad-radial-gold);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 3;
+      padding: 5.5rem 4rem 0;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(13,11,26,0.55);
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-weight: 900;
+      font-size: clamp(2.4rem, 5.5vw, 4.8rem);
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: var(--text-dark);
+      text-shadow: 0 3px 0 rgba(255,255,255,0.18), 0 6px 30px rgba(0,0,0,0.1);
+      margin-bottom: 1.25rem;
+      max-width: 950px;
+    }
+
+    .hero-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      font-weight: 400;
+      color: rgba(13,11,26,0.65);
+      margin-bottom: 3.5rem;
+      letter-spacing: 0.01em;
+    }
+
+    /* ---- Two-column body ---- */
+    .hero-columns {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+
+    .dice-image {
+      width: 100%;
+      max-width: 440px;
+      border-radius: 18px;
+      display: block;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.35), 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* Feature list */
+    .feature-list {
+      list-style: none;
+      margin-top: 2rem;
+    }
+
+    .feature-list li {
+      font-size: 1.02rem;
+      font-weight: 600;
+      color: rgba(13,11,26,0.88);
+      line-height: 1.6;
+      padding: 0.8rem 0 0.8rem 2.25rem;
+      border-bottom: 1px solid rgba(13,11,26,0.15);
+      position: relative;
+    }
+    .feature-list li:last-child { border-bottom: none; }
+
+    .feature-list li::before {
+      content: '⚔';
+      position: absolute;
+      left: 0;
+      top: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--deep-purple);
+      opacity: 0.7;
+    }
+
+    .feature-list strong {
+      color: rgba(13,11,26,0.95);
+      font-weight: 700;
+    }
+
+    /* ---- Discord CTA Card ---- */
+    .cta-card {
+      background: rgba(9,7,20,0.88);
+      backdrop-filter: blur(16px) saturate(1.5);
+      -webkit-backdrop-filter: blur(16px) saturate(1.5);
+      border-radius: 22px;
+      padding: 2.5rem 2.25rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-pink-glow);
+    }
+
+    /* Gradient border via pseudo-element */
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 22px;
+      padding: 1.5px;
+      background: linear-gradient(135deg, rgba(233,30,140,0.7) 0%, rgba(255,208,0,0.4) 60%, transparent 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* Inner glow */
+    .cta-card::after {
+      content: '';
+      position: absolute;
+      top: -60px; left: -60px;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(233,30,140,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-heading {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      line-height: 1.3;
+      color: var(--text-light);
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-text {
+      font-size: 0.92rem;
+      line-height: 1.75;
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Discord button */
+    .discord-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      background: linear-gradient(135deg, #5865F2 0%, #7289DA 100%);
+      color: #fff;
+      text-decoration: none;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.9rem 1.75rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 24px rgba(88,101,242,0.5), 0 2px 8px rgba(0,0,0,0.4);
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+    .discord-btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 36px rgba(88,101,242,0.6), 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .discord-btn:active {
+      transform: translateY(0) scale(0.99);
+      box-shadow: 0 4px 16px rgba(88,101,242,0.4);
+    }
+
+    .discord-icon {
+      height: 22px;
+      width: auto;
+      border-radius: 4px;
+    }
+
+    /* Divider within CTA card */
+    .cta-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin: 1.75rem 0 1.25rem;
+    }
+
+    .powered-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      opacity: 0.7;
+      margin-bottom: 0.6rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dndbeyond-logo {
+      height: 48px;
+      width: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* =========================================================
+       PARTNER BAR (bottom of hero)
+    ========================================================= */
+    .partner-bar {
+      margin-top: 4rem;
+      background: rgba(0,0,0,0.22);
+      border-top: 1px solid rgba(0,0,0,0.18);
+      backdrop-filter: blur(4px);
+      padding: 1.1rem 4rem;
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      position: relative;
+      z-index: 3;
+      flex-wrap: wrap;
+    }
+
+    .partner-bar-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(13,11,26,0.45);
+      flex-shrink: 0;
+    }
+
+    .partner-logo-img {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    /* =========================================================
+       DUNGEON MASTERS SECTION
+    ========================================================= */
+    #dungeon-masters {
+      position: relative;
+      background: var(--deep-purple);
+      padding: 7rem 4rem;
+      overflow: hidden;
+    }
+
+    #dungeon-masters::before {
+      content: '';
+      position: absolute;
+      top: -300px; left: -250px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(233,30,140,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    #dungeon-masters::after {
+      content: '';
+      position: absolute;
+      bottom: -300px; right: -200px;
+      width: 650px; height: 650px;
+      background: radial-gradient(circle, rgba(255,208,0,0.05) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    /* Shared section wrapper */
+    .section-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--pink);
+      margin-bottom: 0.6rem;
+    }
+
+    .section-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-weight: 700;
+      font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+      letter-spacing: -0.02em;
+      color: var(--text-light);
+      margin-bottom: 3.5rem;
+      line-height: 1.15;
+    }
+
+    /* DM Cards Grid */
+    .dm-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .dm-card {
+      background: var(--card-bg);
+      border-radius: 22px;
+      padding: 2.25rem 2rem;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.3s ease;
+    }
+
+    /* Gradient border */
+    .dm-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 22px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(233,30,140,0.35) 0%, rgba(255,208,0,0.15) 50%, transparent 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .dm-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-card-hover);
+    }
+
+    /* Corner glow accent */
+    .dm-card::after {
+      content: '';
+      position: absolute;
+      top: -80px; left: -80px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(233,30,140,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .dm-portrait {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+      margin-bottom: 1.4rem;
+      border: 3px solid transparent;
+      background:
+        linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+        linear-gradient(135deg, var(--pink), var(--gold)) border-box;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 8px 24px rgba(233,30,140,0.2);
+    }
+
+    .dm-name {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--text-light);
+      margin-bottom: 0.2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dm-role {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.88rem;
+      color: var(--pink);
+      margin-bottom: 1.1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dm-bio {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: var(--text-muted);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* =========================================================
+       NEXT STEPS SECTION
+    ========================================================= */
+    #next-steps {
+      position: relative;
+      background: var(--midnight);
+      padding: 7rem 4rem 6rem;
+      overflow: hidden;
+    }
+
+    #next-steps::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(circle, rgba(255,107,43,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .flowchart-wrap {
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 72px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04);
+      margin: 2rem 0 3.5rem;
+    }
+
+    .flowchart-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Big CTA button */
+    .join-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--grad-hero);
+      color: var(--text-dark);
+      text-decoration: none;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 1.1rem 2.75rem;
+      border-radius: 14px;
+      box-shadow: var(--shadow-pink-glow);
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.22s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .join-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.12);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .join-btn:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 14px 48px rgba(233,30,140,0.55), 0 4px 16px rgba(0,0,0,0.5);
+    }
+    .join-btn:hover::before { opacity: 1; }
+    .join-btn:active {
+      transform: translateY(-1px) scale(1.01);
+      box-shadow: 0 6px 24px rgba(233,30,140,0.4);
+    }
+
+    .cta-center {
+      text-align: center;
+    }
+
+    .cta-center .join-btn {
+      display: inline-flex;
+    }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+    footer {
+      background: #05040E;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding: 2.25rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+    }
+
+    .footer-logo {
+      height: 38px;
+      width: 38px;
+      border-radius: 7px;
+      object-fit: cover;
+      opacity: 0.85;
+    }
+
+    .footer-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: rgba(245,237,214,0.4);
+    }
+
+    .footer-copy {
+      font-size: 0.72rem;
+      color: rgba(245,237,214,0.2);
+      letter-spacing: 0.02em;
+    }
+
+    /* =========================================================
+       SCROLL REVEAL ANIMATIONS
+    ========================================================= */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.08s; }
+    .reveal-delay-2 { transition-delay: 0.16s; }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+    @media (max-width: 900px) {
+      nav { padding: 0 1.25rem; }
+      .nav-links { gap: 1.25rem; }
+      .nav-link { font-size: 0.72rem; }
+      .hero-inner { padding: 3.5rem 1.5rem 0; }
+      .hero-columns { grid-template-columns: 1fr; gap: 2rem; }
+      .dice-image { max-width: 100%; }
+      .dm-grid { grid-template-columns: 1fr; }
+      #dungeon-masters, #next-steps { padding: 4.5rem 1.5rem; }
+      .partner-bar { padding: 1rem 1.5rem; }
+      footer { padding: 1.75rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===================== NAVIGATION ===================== -->
+  <nav>
+    <div class="nav-links">
+      <a href="#home"             class="nav-link">Home</a>
+      <a href="#dungeon-masters"  class="nav-link">Meet Your Dungeon Masters</a>
+      <a href="#next-steps"       class="nav-link">Next Steps</a>
+    </div>
+    <img src="branding/logo.png" alt="Guildhouse Legends" class="nav-logo">
+  </nav>
+
+  <!-- ===================== HOME / HERO ===================== -->
+  <section id="home">
+    <div class="noise"></div>
+
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Discord-Hosted · Weekly One-Shots · Open to All</div>
+      <h1 class="hero-title">Welcome to Guildhouse&nbsp;LEGENDS!</h1>
+      <p class="hero-tagline">Hosted on our Discord Server — adventure awaits every week</p>
+
+      <div class="hero-columns">
+
+        <!-- LEFT: Dice image + feature list -->
+        <div>
+          <img src="branding/dice image for front page.png"
+               alt="Dungeons &amp; Dragons dice" class="dice-image">
+          <ul class="feature-list">
+            <li>Earn levels and magic items as you play — <strong>keep them for your next adventure!</strong></li>
+            <li>Work towards making your character <strong>LEGENDARY</strong> — and gain access to unique high-level quests.</li>
+            <li>Self-contained one-shots with <strong>unique stories and resolutions</strong>.</li>
+            <li><strong>$20 per four-hour game session</strong> with multiple times and days to choose from.</li>
+            <li>Level Brackets determine starting gear and difficulty — <strong>level up over time!</strong></li>
+            <li>All experience levels, gender identities, and backgrounds are <strong>welcome!</strong></li>
+          </ul>
+        </div>
+
+        <!-- RIGHT: Discord CTA card -->
+        <div>
+          <div class="cta-card reveal">
+            <div class="cta-heading">Ready to Begin Your Adventure?</div>
+            <p class="cta-text">
+              Join our Discord community to sign up for games, meet your fellow adventurers,
+              and take your first steps into Guildhouse Legends.
+              New sessions are added weekly — don't miss your chance at glory.
+            </p>
+
+            <a href="https://discord.gg/edKrk9KM" target="_blank" rel="noopener" class="discord-btn">
+              <img src="branding/Discord-logo.jpg" alt="Discord" class="discord-icon">
+              Join Our Discord
+            </a>
+
+            <hr class="cta-divider">
+
+            <div class="powered-label">Character Management Powered By</div>
+            <img src="branding/DD-Beyond-Logo white.png" alt="D&D Beyond" class="dndbeyond-logo">
+          </div>
+        </div>
+
+      </div><!-- /.hero-columns -->
+    </div><!-- /.hero-inner -->
+
+    <!-- Partner logos strip -->
+    <div class="partner-bar">
+      <span class="partner-bar-label">Powered by</span>
+      <img src="branding/dndbeyond.png" alt="D&D Beyond" class="partner-logo-img">
+      <img src="branding/Discord-logo.jpg" alt="Discord" class="partner-logo-img" style="border-radius:4px;">
+    </div>
+
+  </section>
+
+  <!-- ===================== DUNGEON MASTERS ===================== -->
+  <section id="dungeon-masters">
+    <div class="section-inner">
+
+      <div class="section-eyebrow">The Guild</div>
+      <h2 class="section-title">Meet Your Dungeon Masters</h2>
+
+      <div class="dm-grid">
+
+        <!-- Mason -->
+        <div class="dm-card reveal">
+          <img src="branding/Mason cartoon DM.png"
+               alt="Mason — Dungeon Master" class="dm-portrait">
+          <div class="dm-name">Mason</div>
+          <div class="dm-role">10 Years of Dungeon Master Experience</div>
+          <p class="dm-bio">
+            My name is Mason and I'm one of the Dungeon Masters running games on this server.
+            Dungeons and Dragons has always been a great way for me to feed my nerdy tendencies
+            while engaging in a social activity that feels fun and encouraging. I hope that with
+            10 years of Dungeon Master experience, I can bring the same experience to the players
+            here at Guildhouse Legends. I am always trying to find new ideas and stories to explore
+            within the main core pillars of DnD: Exploration, Roleplay, and Combat. I always strive
+            to create engaging NPCs, settings full of depth and character, and adventures that push
+            the bounds of your creativity and curiosity. I enjoy facilitating these types of
+            cooperative games and look forward to seeing new players at the table each week!
+          </p>
+        </div>
+
+        <!-- Slater -->
+        <div class="dm-card reveal reveal-delay-1">
+          <img src="branding/Slater Cartoon DM 1.png"
+               alt="Slater — Dungeon Master" class="dm-portrait">
+          <div class="dm-name">Slater</div>
+          <div class="dm-role">7 Years · Professional Entertainer &amp; Thespian</div>
+          <p class="dm-bio">
+            I'm Slater — a long time gamer, professional entertainer, and thespian at heart.
+            For the past 7 years, I've worked in the entertainment industry while playing and
+            facilitating Dungeons &amp; Dragons. My Dungeon Master style is rooted in theater
+            and I endeavor to bring that approach to all of my stories and in-game characters.
+            I focus on performance, character, and imagination above all else. Players in the
+            games I run should feel immersed in the fantasy world we create together, and free
+            to express themselves through their character's eyes. Maps, music, and dice are
+            tools we use to bring our imaginations into the game. I look forward to the
+            situations and stories we'll face together!
+          </p>
+        </div>
+
+      </div><!-- /.dm-grid -->
+    </div><!-- /.section-inner -->
+  </section>
+
+  <!-- ===================== NEXT STEPS ===================== -->
+  <section id="next-steps">
+    <div class="section-inner">
+
+      <div class="section-eyebrow">How It Works</div>
+      <h2 class="section-title">Next Steps</h2>
+      <p style="color: var(--text-muted); font-size: 0.97rem; line-height: 1.75; max-width: 580px; margin-bottom: 0;">
+        Getting started is simple. Follow the path from your first click to your first session —
+        and begin building your legend.
+      </p>
+
+      <div class="flowchart-wrap reveal">
+        <img src="branding/GHL flow chart JAN 26.jpg"
+             alt="Guildhouse Legends — how to get started flowchart">
+      </div>
+
+      <div class="cta-center">
+        <a href="https://discord.gg/edKrk9KM" target="_blank" rel="noopener" class="join-btn">
+          Join Our Discord &amp; Get Started
+        </a>
+      </div>
+
+    </div><!-- /.section-inner -->
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer>
+    <div class="footer-brand">
+      <img src="branding/logo.png" alt="GL" class="footer-logo">
+      <span class="footer-name">Guildhouse Legends</span>
+    </div>
+    <span class="footer-copy">© 2025 Guildhouse Legends. All rights reserved.</span>
+  </footer>
+
+  <!-- ===================== SCROLL REVEAL JS ===================== -->
+  <script>
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -20px 0px' }
+    );
+
+    revealEls.forEach(el => observer.observe(el));
+
+    // Fallback: ensure all reveals are visible after 800ms
+    // (handles headless browsers / screenshots where scroll doesn't fire)
+    setTimeout(() => {
+      revealEls.forEach(el => el.classList.add('visible'));
+    }, 800);
+  </script>
+
+</body>
+</html>
