@@ -80,7 +80,7 @@
       padding: 0 2.5rem;
       background: var(--grad-hero);
       box-shadow: 0 2px 0 rgba(0,0,0,0.2), 0 4px 24px rgba(233,30,140,0.25);
-      overflow: hidden;
+      overflow: visible;
     }
 
     nav::before {
@@ -167,24 +167,26 @@
 
     .hero-eyebrow {
       font-family: 'Cinzel', serif;
-      font-size: 0.72rem;
+      font-size: 0.9rem;
       font-weight: 700;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: rgba(13,11,26,0.55);
+      color: rgba(13,11,26,0.78);
       margin-bottom: 1rem;
     }
 
     .hero-title {
       font-family: 'Cinzel Decorative', serif;
       font-weight: 900;
-      font-size: clamp(2.4rem, 5.5vw, 4.8rem);
+      font-size: clamp(1.75rem, 5.5vw, 4.8rem);
       line-height: 1.08;
       letter-spacing: -0.025em;
       color: var(--text-dark);
       text-shadow: 0 3px 0 rgba(255,255,255,0.18), 0 6px 30px rgba(0,0,0,0.1);
       margin-bottom: 1.25rem;
       max-width: 950px;
+      overflow-wrap: break-word;
+      word-break: break-word;
     }
 
     .hero-tagline {
@@ -220,7 +222,7 @@
     }
 
     .feature-list li {
-      font-size: 1.02rem;
+      font-size: 1.08rem;
       font-weight: 600;
       color: rgba(13,11,26,0.88);
       line-height: 1.6;
@@ -383,10 +385,11 @@
 
     .partner-bar-label {
       font-family: 'Cinzel', serif;
-      font-size: 0.65rem;
+      font-size: 1.1rem;
+      font-weight: 700;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: rgba(13,11,26,0.45);
+      color: #000000;
       flex-shrink: 0;
     }
 
@@ -669,6 +672,49 @@
     }
 
     /* =========================================================
+       NAV DROPDOWN
+    ========================================================= */
+    .nav-dropdown {
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-dropdown-menu {
+      display: none;
+      position: fixed;
+      top: 72px;
+      right: 2.5rem;
+      background: var(--deep-purple);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.08);
+      min-width: 180px;
+      z-index: 9999;
+    }
+
+    .nav-dropdown-menu.open {
+      display: block;
+    }
+
+    .nav-dropdown-item {
+      display: block;
+      padding: 0.85rem 1.25rem;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      text-decoration: none;
+      transition: background 0.18s ease, color 0.18s ease;
+    }
+
+    .nav-dropdown-item:hover {
+      background: var(--pink);
+      color: #fff;
+    }
+
+    /* =========================================================
        SCROLL REVEAL ANIMATIONS
     ========================================================= */
     .reveal {
@@ -710,7 +756,14 @@
       <a href="#dungeon-masters"  class="nav-link">Meet Your Dungeon Masters</a>
       <a href="#next-steps"       class="nav-link">Next Steps</a>
     </div>
-    <img src="branding/logo.png" alt="Guildhouse Legends" class="nav-logo">
+    <div class="nav-dropdown" id="navDropdown">
+      <img src="branding/logo.png" alt="Guildhouse Legends" class="nav-logo" onclick="toggleNavDropdown(event)">
+      <div class="nav-dropdown-menu" id="navDropdownMenu">
+        <a href="https://discord.gg/RQd4uyyM4F" target="_blank" rel="noopener" class="nav-dropdown-item">
+          Join Our Discord
+        </a>
+      </div>
+    </div>
   </nav>
 
   <!-- ===================== HOME / HERO ===================== -->
@@ -718,27 +771,12 @@
     <div class="noise"></div>
 
     <div class="hero-inner">
-      <div class="hero-eyebrow">Discord-Hosted · Weekly One-Shots · Open to All</div>
-      <h1 class="hero-title">Welcome to Guildhouse&nbsp;LEGENDS!</h1>
-      <p class="hero-tagline">Hosted on our Discord Server — adventure awaits every week</p>
+      <h1 class="hero-title">Welcome to Guildhouse LEGENDS!</h1>
+      <div class="hero-eyebrow">Discord-Hosted · Weekly One-Shots · Keep Your Character Progress</div>
 
       <div class="hero-columns">
 
-        <!-- LEFT: Dice image + feature list -->
-        <div>
-          <img src="branding/dice image for front page.png"
-               alt="Dungeons &amp; Dragons dice" class="dice-image">
-          <ul class="feature-list">
-            <li>Earn levels and magic items as you play — <strong>keep them for your next adventure!</strong></li>
-            <li>Work towards making your character <strong>LEGENDARY</strong> — and gain access to unique high-level quests.</li>
-            <li>Self-contained one-shots with <strong>unique stories and resolutions</strong>.</li>
-            <li><strong>$20 per four-hour game session</strong> with multiple times and days to choose from.</li>
-            <li>Level Brackets determine starting gear and difficulty — <strong>level up over time!</strong></li>
-            <li>All experience levels, gender identities, and backgrounds are <strong>welcome!</strong></li>
-          </ul>
-        </div>
-
-        <!-- RIGHT: Discord CTA card -->
+        <!-- LEFT: CTA card + feature list -->
         <div>
           <div class="cta-card reveal">
             <div class="cta-heading">Ready to Begin Your Adventure?</div>
@@ -748,16 +786,32 @@
               New sessions are added weekly — don't miss your chance at glory.
             </p>
 
-            <a href="https://discord.gg/edKrk9KM" target="_blank" rel="noopener" class="discord-btn">
-              <img src="branding/Discord-logo.jpg" alt="Discord" class="discord-icon">
+            <a href="https://discord.gg/RQd4uyyM4F" target="_blank" rel="noopener" class="discord-btn">
+              <img src="branding/Discord controller.png" alt="Discord" class="discord-icon">
               Join Our Discord
             </a>
 
             <hr class="cta-divider">
 
-            <div class="powered-label">Character Management Powered By</div>
-            <img src="branding/DD-Beyond-Logo white.png" alt="D&D Beyond" class="dndbeyond-logo">
+            <div style="display:flex; gap:2rem; align-items:flex-start;">
+              <div style="text-align:center;">
+                <div class="powered-label">Character Management<br>Powered By</div>
+                <img src="branding/DD-Beyond-Logo white.png" alt="D&D Beyond" class="dndbeyond-logo" style="display:block; margin:0 auto;">
+              </div>
+              <div style="text-align:center; padding-left:1rem;">
+                <div class="powered-label">Payments By</div>
+                <img src="branding/ko-fi 1.png" alt="Ko-fi" class="dndbeyond-logo" style="display:block; margin:0.9rem 0 0 1rem; border-radius:10px;">
+              </div>
+            </div>
           </div>
+          <ul class="feature-list">
+            <li>Earn levels and magic items as you play — <strong>keep them for your next adventure!</strong></li>
+            <li>Work towards making your character <strong>LEGENDARY</strong> — and gain access to unique high-level quests.</li>
+            <li>Self-contained one-shots with <strong>unique maps, stories, and resolutions</strong>.</li>
+            <li><strong>$20 per four-hour game session</strong> with multiple times and days to choose from.</li>
+            <li>Level Brackets determine starting gear and difficulty — <strong>level up over time!</strong></li>
+            <li>All experience levels, gender identities, and backgrounds are <strong>welcome!</strong></li>
+          </ul>
         </div>
 
       </div><!-- /.hero-columns -->
@@ -840,7 +894,7 @@
       </div>
 
       <div class="cta-center">
-        <a href="https://discord.gg/edKrk9KM" target="_blank" rel="noopener" class="join-btn">
+        <a href="https://discord.gg/RQd4uyyM4F" target="_blank" rel="noopener" class="join-btn">
           Join Our Discord &amp; Get Started
         </a>
       </div>
@@ -859,6 +913,15 @@
 
   <!-- ===================== SCROLL REVEAL JS ===================== -->
   <script>
+    function toggleNavDropdown(e) {
+      e.stopPropagation();
+      document.getElementById('navDropdownMenu').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function() {
+      document.getElementById('navDropdownMenu').classList.remove('open');
+    });
+
     const revealEls = document.querySelectorAll('.reveal');
 
     const observer = new IntersectionObserver(
